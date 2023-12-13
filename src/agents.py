@@ -1,3 +1,5 @@
+import random
+
 import mesa
 
 from .random_walk import RandomWalker
@@ -56,7 +58,17 @@ class JellyfishMedusa(RandomWalker):
         raise NotImplementedError()
 
     def _eat_plankton(self):
-        raise NotImplementedError()
+        neighbors = self.model.grid.get_neighbors(
+            self.position, self.moore, include_center=True
+        )
+        potential_food = [
+            agent for agent in neighbors if isinstance(agent, Plankton)
+        ]
+        if potential_food:
+            plankton: Plankton = self.random.choice(potential_food)
+            energy_gain = self.model.fish_gain_from_food * plankton.density
+            plankton.die()
+            self.energy += energy_gain
 
     def _eat_fish(self):
         raise NotImplementedError()
@@ -111,7 +123,7 @@ class JellyfishLarva(RandomWalker):
             self.transform()
             return
 
-        # TODO: eat plankton
+        self._eat_plankton()
 
         raise NotImplementedError()
 
@@ -119,7 +131,17 @@ class JellyfishLarva(RandomWalker):
         raise NotImplementedError()
 
     def _eat_plankton(self):
-        raise NotImplementedError()
+        neighbors = self.model.grid.get_neighbors(
+            self.position, self.moore, include_center=True
+        )
+        potential_food = [
+            agent for agent in neighbors if isinstance(agent, Plankton)
+        ]
+        if potential_food:
+            plankton: Plankton = self.random.choice(potential_food)
+            energy_gain = self.model.fish_gain_from_food * plankton.density
+            plankton.die()
+            self.energy += energy_gain
 
     def is_mature(self):
         return self.time_to_grow < 0
@@ -154,7 +176,7 @@ class JellyfishPolyp(mesa.Agent):
     def step(self):
         self.time_to_grow -= 1
 
-        # TODO: eat plankton
+        self._eat_plankton()
 
         if self.time_to_grow < 0:
             self._strobilate()
@@ -165,7 +187,17 @@ class JellyfishPolyp(mesa.Agent):
         raise NotImplementedError()
 
     def _eat_plankton(self):
-        raise NotImplementedError()
+        neighbors = self.model.grid.get_neighbors(
+            self.position, self.moore, include_center=True
+        )
+        potential_food = [
+            agent for agent in neighbors if isinstance(agent, Plankton)
+        ]
+        if potential_food:
+            plankton: Plankton = self.random.choice(potential_food)
+            energy_gain = self.model.fish_gain_from_food * plankton.density
+            plankton.die()
+            self.energy += energy_gain
 
     def _strobilate(self):
         raise NotImplementedError()
@@ -240,10 +272,12 @@ class Fish(RandomWalker):
         return self.time_to_grow < 0
 
     def _eat(self):
+
+        neighbors = self.model.grid.get_neighbors(
+            self.position, self.moore, include_center=True
+        )
+
         if self.is_mature():
-            neighbors = self.model.grid.get_neighbors(
-                self.position, self.moore, include_center=True
-            )
             potential_preys = [
                 agent for agent in neighbors if isinstance(agent, JellyfishLarva)
             ]
@@ -251,8 +285,18 @@ class Fish(RandomWalker):
                 prey: JellyfishLarva = self.random.choice(potential_preys)
                 prey.die()
                 self.energy += self.model.fish_gain_from_food
+                return
 
-        # TODO: eat plankton regadless of maturity
+        potential_food = [
+            agent for agent in neighbors if isinstance(agent, Plankton)
+        ]
+        if potential_food:
+            plankton: Plankton = self.random.choice(potential_food)
+            energy_gain = self.model.fish_gain_from_food * plankton.density
+            plankton.die()
+            self.energy += energy_gain
+            return
+
 
     def _find_partners(self):
         neighbors = self.model.grid.get_neighbors(
@@ -268,13 +312,50 @@ class Fish(RandomWalker):
 
     def _reproduce(self):
         self.energy /= 2
-        # TODO: make more fish than just one
-        child = Fish(
-            self.model.next_id(), self.position, self.model, self.moore, self.energy
+        fish_num = random.choices(
+            [1, 2, 3, 4, 5],
+            weights=[0.5, 0.25, 0.125, 0.07, 0.055],
+            k=1
         )
-        self.model.grid.place_agent(child, self.position)
-        self.model.schedule.add(child)
+        for i in range(fish_num):
+            child = Fish(
+                self.model.next_id(), self.position, self.model, self.moore, self.energy
+            )
+            self.model.grid.place_agent(child, self.position)
+            self.model.schedule.add(child)
 
     def die(self):
         self.model.grid.remove_agent(self)
         self.model.schedule.remove(self)
+
+
+class Plankton(RandomWalker):
+    """
+    An agent representing a plankton. Main food source for jellyfish and fish.
+    Args:
+        density (float): Plankton density, determines energy gain for agent which eats him
+    """
+    def __init__(self, unique_id, position, model, density=0.5, moore=True):
+        super().__init__(unique_id, position, model, moore)
+        self.density = density
+        self.time_to_grow = self.model.plankton_time_to_grow
+
+    def die(self):
+        self.model.grid.remove_agent(self)
+        self.model.schedule.remove(self)
+
+    def step(self):
+        """
+        Plankton density grows at each step, when it reaches 1,
+         new plankton agent appears at random neighbour grid cell
+        """
+        self.time_to_grow -= 1
+        self.density += 0.02
+        if self.density > 1:
+            self.grow()
+
+    def grow(self):
+        """
+        Creates new plankton agent
+        """
+        raise NotImplementedError()

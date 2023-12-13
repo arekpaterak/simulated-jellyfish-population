@@ -37,6 +37,8 @@ class MarineEcosystem(mesa.Model):
         fish_reproduction_probability: float = 0.05,
         /
         sea_turtle_gain_from_food: int = 20,
+        /
+        plantkton_time_to_grow: int = 50
         # TODO: add parameters
     ) -> None:
         super().__init__()
