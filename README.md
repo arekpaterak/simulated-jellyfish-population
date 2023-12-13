@@ -1,2 +1,2 @@
-# simulated-jellyfish-population
-A discrete simulation of a jellyfish population in a marine environment.
+# Simulated jellyfish population
+A discrete agent-based simulation of a jellyfish population in a marine environment.
