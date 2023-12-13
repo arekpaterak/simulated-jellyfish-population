@@ -13,21 +13,9 @@ class RandomWalker(mesa.Agent):
     other agents.
     """
 
-    grid = None
-    x = None
-    y = None
-    moore = True
-
-    def __init__(self, unique_id, pos, model, moore=True):
-        """
-        grid: The MultiGrid object in which the agent lives.
-        x: The agent's current x coordinate
-        y: The agent's current y coordinate
-        moore: If True, may move in all 8 directions.
-                Otherwise, only up, down, left, right.
-        """
+    def __init__(self, unique_id, position, model, moore=True):
         super().__init__(unique_id, model)
-        self.pos = pos
+        self.position = position
         self.moore = moore
 
     def random_move(self):
@@ -35,7 +23,7 @@ class RandomWalker(mesa.Agent):
         Step one cell in any allowable direction.
         """
         # Pick the next cell from the adjacent cells.
-        next_moves = self.model.grid.get_neighborhood(self.pos, self.moore, True)
+        next_moves = self.model.grid.get_neighborhood(self.position, self.moore, True)
         next_move = self.random.choice(next_moves)
-        # Now move:
+
         self.model.grid.move_agent(self, next_move)
