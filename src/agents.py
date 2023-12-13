@@ -329,14 +329,16 @@ class Fish(RandomWalker):
         self.model.schedule.remove(self)
 
 
-class Plankton(RandomWalker):
+class Plankton(mesa.Agent):
     """
     An agent representing a plankton. Main food source for jellyfish and fish.
     Args:
         density (float): Plankton density, determines energy gain for agent which eats him
     """
     def __init__(self, unique_id, position, model, density=0.5, moore=True):
-        super().__init__(unique_id, position, model, moore)
+        super().__init__(unique_id, model)
+        self.position = position
+        self.moore = moore
         self.density = density
         self.time_to_grow = self.model.plankton_time_to_grow
 
