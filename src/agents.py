@@ -2,7 +2,7 @@ import random
 
 import mesa
 
-from .random_walk import RandomWalker
+from random_walk import RandomWalker
 
 
 # TODO: think generally about energy
