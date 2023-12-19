@@ -1,14 +1,71 @@
-import random
-
 import mesa
 
-from random_walk import RandomWalker
+from .base import BaseSeaAgent
+from .food_source import Plankton
+
+Position = tuple[int, int]
 
 
-# TODO: think generally about energy
+class Animal(BaseSeaAgent):
+    """
+    Base class for all animals in the simulation.
+    """
+
+    def __init__(
+        self, unique_id: int, position: Position, model: mesa.Model, moore: bool = True
+    ) -> None:
+        super().__init__(unique_id, position, model, moore)
 
 
-class JellyfishMedusa(RandomWalker):
+class MovingAnimal(BaseSeaAgent):
+    """
+    Class implementing random walker methods in a generalized manner.
+
+    Not intended to be used on its own, but to inherit its methods to multiple
+    other agents.
+    """
+
+    def __init__(
+        self,
+        unique_id: int,
+        position: Position,
+        model: mesa.Model,
+        moore: bool = True,
+    ) -> None:
+        super().__init__(unique_id, position, model, moore)
+
+    def random_move(self, radius: int = 1) -> None:
+        """
+        Step one cell in any allowable direction.
+        """
+        next_position = self._find_empty_cell_in_neighborhood(radius)
+
+        self.model.grid.move_agent(self, next_position)
+
+    def _find_empty_cell_in_neighborhood(self, radius: int = 1) -> Position:
+        """
+        Find an empty cell in the neighborhood and return its coordinates.
+        """
+        neighborhood = self.model.grid.get_neighborhood(
+            self.position, self.moore, include_center=True, radius=radius
+        )
+
+        next_position = self.random.choice(neighborhood)
+        cell_agents = self.model.grid.get_cell_list_contents([next_position])
+        while (
+            not (
+                self.model.grid.is_cell_empty(next_position)
+                or all([agent.is_food_source() for agent in cell_agents])
+            )
+            or next_position == self.position
+        ):
+            next_position = self.random.choice(neighborhood)
+            cell_agents = self.model.grid.get_cell_list_contents([next_position])
+
+        return next_position
+
+
+class JellyfishMedusa(MovingAnimal):
     """
     An agent representing a swiming, mature jellyfish.
 
@@ -35,8 +92,6 @@ class JellyfishMedusa(RandomWalker):
         self.energy -= 1
         self.time_to_grow -= 1
 
-        cell = self.model.grid.get_cell_list_contents([self.position])
-
         # TODO: eat plankton or small fish
 
         if self.energy < 0:
@@ -61,9 +116,7 @@ class JellyfishMedusa(RandomWalker):
         neighbors = self.model.grid.get_neighbors(
             self.position, self.moore, include_center=True
         )
-        potential_food = [
-            agent for agent in neighbors if isinstance(agent, Plankton)
-        ]
+        potential_food = [agent for agent in neighbors if isinstance(agent, Plankton)]
         if potential_food:
             plankton: Plankton = self.random.choice(potential_food)
             energy_gain = self.model.fish_gain_from_food * plankton.density
@@ -102,7 +155,7 @@ class JellyfishMedusa(RandomWalker):
         self.model.schedule.remove(self)
 
 
-class JellyfishLarva(RandomWalker):
+class JellyfishLarva(MovingAnimal):
     """
     An agent representing a jellyfish larva.
 
@@ -123,7 +176,6 @@ class JellyfishLarva(RandomWalker):
 
         self._eat_plankton()
 
-
     def _eat(self):
         raise NotImplementedError()
 
@@ -131,9 +183,7 @@ class JellyfishLarva(RandomWalker):
         neighbors = self.model.grid.get_neighbors(
             self.position, self.moore, include_center=True
         )
-        potential_food = [
-            agent for agent in neighbors if isinstance(agent, Plankton)
-        ]
+        potential_food = [agent for agent in neighbors if isinstance(agent, Plankton)]
         if potential_food:
             plankton: Plankton = self.random.choice(potential_food)
             energy_gain = self.model.fish_gain_from_food * plankton.density
@@ -153,16 +203,15 @@ class JellyfishLarva(RandomWalker):
         self.model.schedule.remove(self)
 
 
-class JellyfishPolyp(mesa.Agent):
+class JellyfishPolyp(Animal):
     """
     An agent representing a jellyfish polyp.
 
     It can reproduce asexually via strobilation. It doesn't move. It isn't eaten by anything.
     """
 
-    def __init__(self, unique_id, position, model):
-        super().__init__(unique_id, model)
-        self.position = position
+    def __init__(self, unique_id, position, model, moore=True):
+        super().__init__(unique_id, position, model, moore)
         self.time_to_grow = self.model.jellyfish_polyp_time_to_grow
 
     def step(self):
@@ -180,9 +229,7 @@ class JellyfishPolyp(mesa.Agent):
         neighbors = self.model.grid.get_neighbors(
             self.position, self.moore, include_center=True
         )
-        potential_food = [
-            agent for agent in neighbors if isinstance(agent, Plankton)
-        ]
+        potential_food = [agent for agent in neighbors if isinstance(agent, Plankton)]
         if potential_food:
             plankton: Plankton = self.random.choice(potential_food)
             energy_gain = self.model.fish_gain_from_food * plankton.density
@@ -193,7 +240,7 @@ class JellyfishPolyp(mesa.Agent):
         raise NotImplementedError()
 
 
-class SeaTurtle(RandomWalker):
+class SeaTurtle(MovingAnimal):
     """
     A representative jellyfish predator in the model.
 
@@ -223,7 +270,7 @@ class SeaTurtle(RandomWalker):
             self.energy += self.model.sea_turtle_gain_from_food
 
 
-class Fish(RandomWalker):
+class Fish(MovingAnimal):
     """
     An agent representing a fish. Main competitor of jellyfish for plankton.
 
@@ -262,7 +309,6 @@ class Fish(RandomWalker):
         return self.time_to_grow < 0
 
     def _eat(self):
-
         neighbors = self.model.grid.get_neighbors(
             self.position, self.moore, include_center=True
         )
@@ -277,16 +323,13 @@ class Fish(RandomWalker):
                 self.energy += self.model.fish_gain_from_food
                 return
 
-        potential_food = [
-            agent for agent in neighbors if isinstance(agent, Plankton)
-        ]
+        potential_food = [agent for agent in neighbors if isinstance(agent, Plankton)]
         if potential_food:
             plankton: Plankton = self.random.choice(potential_food)
             energy_gain = self.model.fish_gain_from_food * plankton.density
             plankton.die()
             self.energy += energy_gain
             return
-
 
     def _find_partners(self):
         neighbors = self.model.grid.get_neighbors(
@@ -302,10 +345,8 @@ class Fish(RandomWalker):
 
     def _reproduce(self):
         self.energy /= 2
-        fish_num = random.choices(
-            [1, 2, 3, 4, 5],
-            weights=[0.5, 0.25, 0.125, 0.07, 0.055],
-            k=1
+        fish_num = self.random.choices(
+            [1, 2, 3, 4, 5], weights=[0.5, 0.25, 0.125, 0.07, 0.055], k=1
         )
         for i in range(fish_num):
             child = Fish(
@@ -317,37 +358,3 @@ class Fish(RandomWalker):
     def die(self):
         self.model.grid.remove_agent(self)
         self.model.schedule.remove(self)
-
-
-class Plankton(mesa.Agent):
-    """
-    An agent representing a plankton. Main food source for jellyfish and fish.
-    Args:
-        density (float): Plankton density, determines energy gain for agent which eats him
-    """
-    def __init__(self, unique_id, position, model, density=0.5, moore=True):
-        super().__init__(unique_id, model)
-        self.position = position
-        self.moore = moore
-        self.density = density
-        self.time_to_grow = self.model.plankton_time_to_grow
-
-    def die(self):
-        self.model.grid.remove_agent(self)
-        self.model.schedule.remove(self)
-
-    def step(self):
-        """
-        Plankton density grows at each step, when it reaches 1,
-         new plankton agent appears at random neighbour grid cell
-        """
-        self.time_to_grow -= 1
-        self.density += 0.02
-        if self.density > 1:
-            self.grow()
-
-    def grow(self):
-        """
-        Creates new plankton agent
-        """
-        raise NotImplementedError()

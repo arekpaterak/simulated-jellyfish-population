@@ -1,6 +1,7 @@
 import mesa
 
-from agents import *
+from agents.food_source import *
+from agents.animals import *
 from scheduler import RandomActivationByTypeFiltered
 
 

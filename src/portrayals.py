@@ -1,10 +1,13 @@
-from agents import (
-    JellyfishLarva,
-    JellyfishPolyp,
-    JellyfishMedusa,
+from agents.food_source import (
     Plankton,
-    SeaTurtle,
+)
+
+from agents.animals import (
+    JellyfishLarva,
+    JellyfishMedusa,
+    JellyfishPolyp,
     Fish,
+    SeaTurtle,
 )
 
 
