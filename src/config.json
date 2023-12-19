@@ -5,7 +5,7 @@
   "initial_population": {
     "JellyfishMedusa": 0,
     "JellyfishPolyp": 0,
-    "JellyfishLarva": 10,
+    "JellyfishLarva": 50,
     "SeaTurtle": 0,
     "Fish": 0
   },
@@ -18,13 +18,13 @@
   },
 
   "jellyfish_polyp": {
-    "time_to_grow": "",
+    "time_to_grow": 10,
     "polyp_gain_from_food": 0,
     "polyp_strobilation_rate": 0
   },
 
   "jellyfish_larva": {
-    "time_to_grow": 0,
+    "time_to_grow": 10,
     "gain_from_food": 0
   },
 

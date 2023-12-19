@@ -17,6 +17,10 @@ class MarineEcosystem(mesa.Model):
 
         width = config['width']
         height = config['height']
+
+        jellyfish_larva_initial_population = config['initial_population']['JellyfishLarva']
+        jellyfish_polyp_initial_population = config['initial_population']['JellyfishPolyp']
+
         self.jellyfish_larva_time_to_grow = config['jellyfish_larva']['time_to_grow']
         self.jellyfish_polyp_time_to_grow = config['jellyfish_polyp']['time_to_grow']
 
@@ -33,7 +37,8 @@ class MarineEcosystem(mesa.Model):
             }
         )
 
-        self._init_population(JellyfishLarva, 10)
+        for agent in config['initial_population']:
+            self._init_population(globals()[agent], config['initial_population'][agent])
 
         self.running = True
 
