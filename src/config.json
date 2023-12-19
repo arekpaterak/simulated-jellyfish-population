@@ -1,39 +1,39 @@
 {
-  "width": "100",
-  "height": "100",
+  "width": 100,
+  "height": 100,
 
   "initial_population": {
-    "JellyfishMedusa": "0",
-    "JellyfishPolyp": "0",
-    "JellyfishLarva": "10",
-    "SeaTurtle": "0",
-    "Fish": "0"
+    "JellyfishMedusa": 0,
+    "JellyfishPolyp": 0,
+    "JellyfishLarva": 10,
+    "SeaTurtle": 0,
+    "Fish": 0
   },
 
   "jellyfish_medusa": {
-    "time_to_grow": "",
-    "gain_from_food": "",
-    "reproduction_probability": "",
-    "reproduction_rate": ""
+    "time_to_grow": 0,
+    "gain_from_food": 0,
+    "reproduction_probability": 0,
+    "reproduction_rate": 0
   },
 
   "jellyfish_polyp": {
-    "time_to_grow": "",
-    "polyp_gain_from_food": "",
-    "polyp_strobilation_rate": ""
+    "time_to_grow": 0,
+    "polyp_gain_from_food": 0,
+    "polyp_strobilation_rate": 0
   },
 
   "jellyfish_larva": {
-    "time_to_grow": "",
-    "gain_from_food": ""
+    "time_to_grow": 0,
+    "gain_from_food": 0
   },
 
   "fish": {
-    "time_to_grow": "",
-    "gain_from_food": "",
-    "reproduction_probability": ""
+    "time_to_grow": 0,
+    "gain_from_food": 0,
+    "reproduction_probability": 0
   },
 
-  "sea_turtle_gain_from_food": "",
-  "plantkton_time_to_grow": ""
+  "sea_turtle_gain_from_food": 0,
+  "plantkton_time_to_grow": 0
 }
