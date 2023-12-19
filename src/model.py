@@ -2,6 +2,7 @@ import mesa
 
 from agents.food_source import *
 from agents.animals import *
+import json
 from scheduler import RandomActivationByTypeFiltered
 
 
@@ -10,45 +11,24 @@ class MarineEcosystem(mesa.Model):
     A model of a whole environment in the simulation.
     """
 
-    def __init__(
-        self,
-        width: int = 20,
-        height: int = 20,
-
-        initial_jellyfish_medusa_population_size: int = 1000,
-        initial_jellyfish_polyp_population_size: int = 100,
-        initial_jellyfish_larva_population_size: int = 100,
-        initial_sea_turtle_population_size: int = 100,
-        initial_fish_population_size: int = 1000,
-
-        jellyfish_medusa_time_to_grow: int = 15,
-        jellyfish_medusa_gain_from_food: int = 20,
-        jellyfish_medusa_reproduction_probability: float = 0.05,
-        jellyfish_medusa_reproduction_rate: int = 5, # larvae per day
-
-        jellyfish_polyp_time_to_grow: int = 30,
-        jellyfish_polyp_gain_from_food: int = 20,
-        jellyfish_polyp_strobilation_rate: int = 1, # medusae per day
-
-        jellyfish_larva_time_to_grow: int = 5,
-        jellyfish_larva_gain_from_food: int = 20,
-
-        fish_time_to_grow: int = 90,  # days
-        fish_gain_from_food: int = 20,
-        fish_reproduction_probability: float = 0.05,
-
-        sea_turtle_gain_from_food: int = 20,
-
-        plantkton_time_to_grow: int = 50
-        # TODO: add parameters
-    ) -> None:
+    def __init__(self) -> None:
         super().__init__()
 
-        # TODO: assign parameters
+        with open("config.json") as file:
+            config = json.load(file)
 
-        self.jellyfish_larva_time_to_grow = jellyfish_larva_time_to_grow
+        width = config["width"]
+        height = config["height"]
 
-        self.jellyfish_polyp_time_to_grow = jellyfish_polyp_time_to_grow
+        jellyfish_larva_initial_population = config["initial_population"][
+            "JellyfishLarva"
+        ]
+        jellyfish_polyp_initial_population = config["initial_population"][
+            "JellyfishPolyp"
+        ]
+
+        self.jellyfish_larva_time_to_grow = config["jellyfish_larva"]["time_to_grow"]
+        self.jellyfish_polyp_time_to_grow = config["jellyfish_polyp"]["time_to_grow"]
 
         self.schedule = RandomActivationByTypeFiltered(self)
         self.grid = mesa.space.MultiGrid(width, height, torus=True)
@@ -65,7 +45,8 @@ class MarineEcosystem(mesa.Model):
             }
         )
 
-        self._init_population(JellyfishLarva, 10)
+        for agent in config["initial_population"]:
+            self._init_population(globals()[agent], config["initial_population"][agent])
 
         self.running = True
 

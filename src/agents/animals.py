@@ -213,6 +213,7 @@ class JellyfishPolyp(Animal):
     def __init__(self, unique_id, position, model, moore=True):
         super().__init__(unique_id, position, model, moore)
         self.time_to_grow = self.model.jellyfish_polyp_time_to_grow
+        self.moore = moore
 
     def step(self):
         self.time_to_grow -= 1
@@ -237,7 +238,7 @@ class JellyfishPolyp(Animal):
             self.energy += energy_gain
 
     def _strobilate(self):
-        raise NotImplementedError()
+        pass
 
 
 class SeaTurtle(MovingAnimal):
