@@ -78,7 +78,7 @@ class MarineEcosystem(mesa.Model):
 
             energy = None  # TODO: assign energy
 
-            agent = agent_type(i, (x, y), self)
+            agent = agent_type(self.next_id(), (x, y), self)
 
             self.grid.place_agent(agent, (x, y))
             self.schedule.add(agent)
