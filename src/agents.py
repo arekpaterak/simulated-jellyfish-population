@@ -113,19 +113,16 @@ class JellyfishLarva(RandomWalker):
         super().__init__(unique_id, position, model, moore)
         self.time_to_grow = self.model.jellyfish_larva_time_to_grow
 
-        raise NotImplementedError()
-
     def step(self):
         self.random_move()
 
         self.time_to_grow -= 1
-        if self.is_mature():
+        if self.time_to_grow < 0:
             self.transform()
             return
 
         self._eat_plankton()
 
-        raise NotImplementedError()
 
     def _eat(self):
         raise NotImplementedError()
@@ -142,9 +139,6 @@ class JellyfishLarva(RandomWalker):
             energy_gain = self.model.fish_gain_from_food * plankton.density
             plankton.die()
             self.energy += energy_gain
-
-    def is_mature(self):
-        return self.time_to_grow < 0
 
     def transform(self):
         polyp = JellyfishPolyp(self.model.next_id(), self.position, self.model)
@@ -171,8 +165,6 @@ class JellyfishPolyp(mesa.Agent):
         self.position = position
         self.time_to_grow = self.model.jellyfish_polyp_time_to_grow
 
-        raise NotImplementedError()
-
     def step(self):
         self.time_to_grow -= 1
 
@@ -180,8 +172,6 @@ class JellyfishPolyp(mesa.Agent):
 
         if self.time_to_grow < 0:
             self._strobilate()
-
-        raise NotImplementedError()
 
     def _eat(self):
         raise NotImplementedError()
