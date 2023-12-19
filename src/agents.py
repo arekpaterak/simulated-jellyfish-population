@@ -191,7 +191,7 @@ class JellyfishPolyp(mesa.Agent):
             self.energy += energy_gain
 
     def _strobilate(self):
-        raise NotImplementedError()
+        pass
 
 
 class SeaTurtle(RandomWalker):

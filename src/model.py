@@ -15,12 +15,8 @@ class MarineEcosystem(mesa.Model):
         with open('config.json') as file:
             config = json.load(file)
 
-        try:
-            width = config['width']
-            height = config['height']
-        except ValueError:
-            raise ValueError('Incorrect or missing grid size parameters')
-
+        width = config['width']
+        height = config['height']
         self.jellyfish_larva_time_to_grow = config['jellyfish_larva']['time_to_grow']
         self.jellyfish_polyp_time_to_grow = config['jellyfish_polyp']['time_to_grow']
 

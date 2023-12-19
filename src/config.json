@@ -18,7 +18,7 @@
   },
 
   "jellyfish_polyp": {
-    "time_to_grow": 0,
+    "time_to_grow": "",
     "polyp_gain_from_food": 0,
     "polyp_strobilation_rate": 0
   },
