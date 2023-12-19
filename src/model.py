@@ -1,6 +1,8 @@
 import mesa
+
+from agents.food_source import *
+from agents.animals import *
 import json
-from agents import *
 from scheduler import RandomActivationByTypeFiltered
 
 
@@ -12,24 +14,30 @@ class MarineEcosystem(mesa.Model):
     def __init__(self) -> None:
         super().__init__()
 
-        with open('config.json') as file:
+        with open("config.json") as file:
             config = json.load(file)
 
-        width = config['width']
-        height = config['height']
+        width = config["width"]
+        height = config["height"]
 
-        jellyfish_larva_initial_population = config['initial_population']['JellyfishLarva']
-        jellyfish_polyp_initial_population = config['initial_population']['JellyfishPolyp']
+        jellyfish_larva_initial_population = config["initial_population"][
+            "JellyfishLarva"
+        ]
+        jellyfish_polyp_initial_population = config["initial_population"][
+            "JellyfishPolyp"
+        ]
 
-        self.jellyfish_larva_time_to_grow = config['jellyfish_larva']['time_to_grow']
-        self.jellyfish_polyp_time_to_grow = config['jellyfish_polyp']['time_to_grow']
+        self.jellyfish_larva_time_to_grow = config["jellyfish_larva"]["time_to_grow"]
+        self.jellyfish_polyp_time_to_grow = config["jellyfish_polyp"]["time_to_grow"]
 
         self.schedule = RandomActivationByTypeFiltered(self)
         self.grid = mesa.space.MultiGrid(width, height, torus=True)
 
         self.datacollector = mesa.datacollection.DataCollector(
             {
-                "Jellyfish Medusae": lambda m: m.schedule.get_type_count(JellyfishMedusa),
+                "Jellyfish Medusae": lambda m: m.schedule.get_type_count(
+                    JellyfishMedusa
+                ),
                 "Jellyfish Polyps": lambda m: m.schedule.get_type_count(JellyfishPolyp),
                 "Jellyfish Larvae": lambda m: m.schedule.get_type_count(JellyfishLarva),
                 "Sea Turtles": lambda m: m.schedule.get_type_count(SeaTurtle),
@@ -37,8 +45,8 @@ class MarineEcosystem(mesa.Model):
             }
         )
 
-        for agent in config['initial_population']:
-            self._init_population(globals()[agent], config['initial_population'][agent])
+        for agent in config["initial_population"]:
+            self._init_population(globals()[agent], config["initial_population"][agent])
 
         self.running = True
 
