@@ -10,6 +10,7 @@ server = ModularServer(
     MarineEcosystem,
     [grid],
     "Jellyfish population simulation",
+    {"width": 100, "height": 100},
 )
 
 server.port = 8521
