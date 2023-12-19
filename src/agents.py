@@ -160,10 +160,11 @@ class JellyfishPolyp(mesa.Agent):
     It can reproduce asexually via strobilation. It doesn't move. It isn't eaten by anything.
     """
 
-    def __init__(self, unique_id, position, model):
+    def __init__(self, unique_id, position, model, moore=True):
         super().__init__(unique_id, model)
         self.position = position
         self.time_to_grow = self.model.jellyfish_polyp_time_to_grow
+        self.moore = moore
 
     def step(self):
         self.time_to_grow -= 1
@@ -190,7 +191,7 @@ class JellyfishPolyp(mesa.Agent):
             self.energy += energy_gain
 
     def _strobilate(self):
-        raise NotImplementedError()
+        pass
 
 
 class SeaTurtle(RandomWalker):
