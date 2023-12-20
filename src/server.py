@@ -1,10 +1,14 @@
+import json
 from mesa.visualization.modules import CanvasGrid
 from portrayals import agent_portrayal
 from mesa.visualization.ModularVisualization import ModularServer
 from model import MarineEcosystem
 
 
-grid = CanvasGrid(agent_portrayal, 100, 100, canvas_width=800, canvas_height=800)
+with open('config.json') as file:
+    config = json.load(file)
+
+grid = CanvasGrid(agent_portrayal, config['width'], config['height'], canvas_width=config['width'] * 8, canvas_height=config['height'] * 8)
 
 server = ModularServer(
     MarineEcosystem,
@@ -12,5 +16,6 @@ server = ModularServer(
     "Jellyfish population simulation",
 )
 
-server.port = 8521
+server.port = 8522
+
 server.launch()

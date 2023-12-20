@@ -4,7 +4,7 @@ from agents.food_source import *
 from agents.animals import *
 import json
 from scheduler import RandomActivationByTypeFiltered
-
+import time
 
 class MarineEcosystem(mesa.Model):
     """
@@ -17,27 +17,28 @@ class MarineEcosystem(mesa.Model):
         with open("config.json") as file:
             config = json.load(file)
 
-        width = config["width"]
-        height = config["height"]
-
-        jellyfish_larva_initial_population = config["initial_population"][
-            "JellyfishLarva"
-        ]
-        jellyfish_polyp_initial_population = config["initial_population"][
-            "JellyfishPolyp"
-        ]
+        self.width = config["width"]
+        self.height = config["height"]
 
         self.jellyfish_larva_time_to_grow = config["jellyfish_larva"]["time_to_grow"]
+
         self.jellyfish_polyp_time_to_grow = config["jellyfish_polyp"]["time_to_grow"]
+        self.jellyfish_polyp_gain_from_food = config['jellyfish_polyp']['gain_from_food']
+
+        self.jellyfish_medusa_time_to_grow = config["jellyfish_medusa"]["time_to_grow"]
+        self.jellyfish_medusa_reproduce_probability = config['jellyfish_medusa']['reproduce_probability']
+        self.jellyfish_medusa_reproduce_rate = config['jellyfish_medusa']['reproduce_rate']
+        self.jellyfish_medusa_gain_from_food = config['jellyfish_medusa']['gain_from_food']
+
+        self.plankton_time_to_grow = config["plankton"]["time_to_grow"]
+        self.plankton_grow_probability = config['plankton']["grow_probability"]
 
         self.schedule = RandomActivationByTypeFiltered(self)
-        self.grid = mesa.space.MultiGrid(width, height, torus=True)
+        self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
 
         self.datacollector = mesa.datacollection.DataCollector(
             {
-                "Jellyfish Medusae": lambda m: m.schedule.get_type_count(
-                    JellyfishMedusa
-                ),
+                "Jellyfish Medusa": lambda m: m.schedule.get_type_count(JellyfishMedusa),
                 "Jellyfish Polyps": lambda m: m.schedule.get_type_count(JellyfishPolyp),
                 "Jellyfish Larvae": lambda m: m.schedule.get_type_count(JellyfishLarva),
                 "Sea Turtles": lambda m: m.schedule.get_type_count(SeaTurtle),
@@ -55,10 +56,8 @@ class MarineEcosystem(mesa.Model):
         Create a new population of agents of a given type.
         """
         for i in range(size):
-            x = self.random.randrange(100)
-            y = self.random.randrange(100)
-
-            energy = None  # TODO: assign energy
+            x = self.random.randrange(self.width)
+            y = self.random.randrange(self.height)
 
             agent = agent_type(self.next_id(), (x, y), self)
 
@@ -71,3 +70,12 @@ class MarineEcosystem(mesa.Model):
         """
         self.schedule.step()
         self.datacollector.collect(self)
+        self.remove_redundant_agents()
+
+    def remove_redundant_agents(self, max_agents_per_cell=2):
+        for cell_content in self.grid.coord_iter():
+            cell_agents, cords = cell_content
+            if len(cell_agents) > max_agents_per_cell:
+                for agent in cell_agents[max_agents_per_cell:]:
+                    self.grid.remove_agent(agent)
+                    self.schedule.remove(agent)

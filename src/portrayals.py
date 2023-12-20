@@ -19,7 +19,7 @@ def agent_portrayal(agent):
                 "Color": "#f76fa3",
                 "Filled": "true",
                 "Layer": 0,
-                "r": 0.5,
+                "r": 0.3,
             }
 
         case JellyfishPolyp():
@@ -28,44 +28,26 @@ def agent_portrayal(agent):
                 "Color": "#f76fa3",
                 "Filled": "false",
                 "Layer": 0,
-                "r": 1,
+                "r": 0.6,
             }
 
-        # if isinstance(agent, JellyfishMedusa):
-        #     portrayal = {
-        #         "Shape": "circle",
-        #         "Color": "blue",
-        #         "Filled": "true",
-        #         "Layer": 0,
-        #         "r": 0.6
-        #     }
+        case JellyfishMedusa():
+            portrayal = {
+                "Shape": "circle",
+                "Color": "#f76fa3",
+                "Filled": "false",
+                "Layer": 0,
+                "r": 0.9
+            }
 
-        # if isinstance(agent, Plankton):
-        #     portrayal = {
-        #         "Shape": "rectangle",
-        #         "Color": "green",
-        #         "Filled": "false",
-        #         "Layer": 0,
-        #         "r": 0.4
-        #     }
-
-        # if isinstance(agent, SeaTurtle):
-        #     portrayal = {
-        #         "Shape": "circle",
-        #         "Color": "yellow",
-        #         "Filled": "true",
-        #         "Layer": 0,
-        #         "r": 0.6
-        #     }
-
-        # if isinstance(agent, Fish):
-        #     portrayal = {
-        #         "Shape": "circle",
-        #         "Color": "purple",
-        #         "Filled": "true",
-        #         "Layer": 0,
-        #         "r": 0.4
-        #     }
+        case Plankton():
+            portrayal = {
+                "Shape": "circle",
+                "Color": "green",
+                "Filled": "false",
+                "Layer": -1,
+                "r": 0.5
+            }
 
         case _:
             portrayal = {}
