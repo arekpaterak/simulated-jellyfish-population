@@ -18,8 +18,6 @@ class FoodSource(BaseSeaAgent):
 class Plankton(FoodSource):
     """
     An agent representing a plankton. Main food source for jellyfish and fish.
-    Args:
-        density (float): Plankton density, determines energy gain for agent which eats him
     """
 
     def __init__(self, unique_id, position, model, density=0, moore=True):
@@ -27,10 +25,6 @@ class Plankton(FoodSource):
         self.density = density
         self.time_to_grow = self.model.plankton_time_to_grow
         self.grow_probability = self.model.plankton_grow_probability
-
-    def die(self):
-        self.model.grid.remove_agent(self)
-        self.model.schedule.remove(self)
 
     def step(self):
         """
@@ -44,11 +38,14 @@ class Plankton(FoodSource):
         """
         Creates new plankton agent
         """
-        plankton = Plankton(self.model.next_id(), self.position, self.model)
-        new_position = (
-            max(min(self.position[0] + self.random.choice([-1, 0, 1]), self.model.width - 1), 0),
-            max(min(self.position[1] + self.random.choice([-1, 0, 1]), self.model.height - 1), 0)
+        new_position = self.random.choice(
+            self.model.grid.get_neighborhood(self.position, self.moore, False)
         )
-        self.model.grid.place_agent(plankton, new_position)
-        self.model.schedule.add(plankton)
+        if self.model.grid.is_cell_empty(new_position):
+            plankton = Plankton(self.model.next_id(), new_position, self.model)
+            self.model.grid.place_agent(plankton, new_position)
+            self.model.schedule.add(plankton)
 
+    def die(self):
+        self.model.grid.remove_agent(self)
+        self.model.schedule.remove(self)

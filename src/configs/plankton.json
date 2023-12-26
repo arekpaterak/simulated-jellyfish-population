@@ -4,8 +4,8 @@
 
   "initial_population": {
     "JellyfishMedusa": 0,
-    "JellyfishPolyp": 50,
-    "JellyfishLarva": 50,
+    "JellyfishPolyp": 0,
+    "JellyfishLarva": 0,
     "SeaTurtle": 0,
     "Fish": 0,
     "Plankton": 100
@@ -19,7 +19,7 @@
   },
 
   "jellyfish_polyp": {
-    "time_to_grow": 10,
+    "time_to_grow": 30,
     "gain_from_food": 0,
     "strobilation_rate": 0
   },
@@ -40,7 +40,7 @@
   },
 
   "plankton": {
-    "time_to_grow": 55,
+    "time_to_grow": 10,
     "grow_probability": 0.1
   }
 }

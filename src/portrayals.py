@@ -26,7 +26,6 @@ def agent_portrayal(agent):
             portrayal = {
                 "Shape": "circle",
                 "Color": "#f76fa3",
-                "Filled": "false",
                 "Layer": 0,
                 "r": 0.6,
             }
@@ -35,18 +34,26 @@ def agent_portrayal(agent):
             portrayal = {
                 "Shape": "circle",
                 "Color": "#f76fa3",
-                "Filled": "false",
+                "Filled": "true",
                 "Layer": 0,
-                "r": 0.9
+                "r": 0.9,
             }
 
         case Plankton():
             portrayal = {
                 "Shape": "circle",
                 "Color": "green",
-                "Filled": "false",
-                "Layer": -1,
-                "r": 0.5
+                "Layer": 0,
+                "r": 0.5,
+            }
+
+        case SeaTurtle():
+            portrayal = {
+                "Shape": "circle",
+                "Color": "green",
+                "Filled": "true",
+                "Layer": 5,
+                "r": 5,
             }
 
         case _:
