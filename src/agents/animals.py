@@ -83,9 +83,9 @@ class JellyfishMedusa(MovingAnimal):
         # TODO: think if we need males and females
 
     def step(self):
-        self.random_move()
+        self.random_move(radius=4)
 
-        self.energy -= 1
+        self.energy -= 2
         self.time_to_grow -= 1
 
         # TODO: eat plankton or small fish
@@ -144,6 +144,15 @@ class JellyfishMedusa(MovingAnimal):
         - each new larva is placed on randomly chosen neighbour cell
         :return:
         """
+
+        neighborhood = list(self.model.grid.get_neighborhood(
+            self.position, self.moore, include_center=True, radius=1
+        ))
+        agents = [self.model.grid.get_cell_list_contents([position]) for position in neighborhood if self.model.grid.get_cell_list_contents([position])]
+
+        if len(agents) > 3:
+            return
+
         if self._find_empty_cell_in_neighborhood(1):
             self.energy /= 2
             new_larvas = np.random.normal(self.model.jellyfish_medusa_reproduce_rate, 0.8)
@@ -163,7 +172,7 @@ class JellyfishMedusa(MovingAnimal):
         self.model.schedule.remove(self)
 
 
-class JellyfishPolyp(Animal):
+class JellyfishPolyp(MovingAnimal):
     """
     An agent representing a jellyfish polyp.
 
@@ -180,6 +189,8 @@ class JellyfishPolyp(Animal):
         self.time_to_grow -= 1
 
         self._eat_plankton()
+
+        self.random_move(radius=2)
 
         if self.time_to_grow < 0:
             self._strobilate()
@@ -261,13 +272,12 @@ class SeaTurtle(MovingAnimal):
     Eats jellyfish in their medusa phase. Lives so long that it doesn't die in the model. Its reproduction is not a part of the model.
     """
 
-    def __init__(self, unique_id, position, model, moore=True, energy=None):
+    def __init__(self, unique_id, position, model, moore=True):
         super().__init__(unique_id, position, model, moore)
 
-        raise NotImplementedError()
 
     def step(self):
-        self.random_move()
+        self.random_move(radius=7)
 
         self._eat()
 
@@ -281,7 +291,6 @@ class SeaTurtle(MovingAnimal):
         if potential_preys:
             prey: JellyfishMedusa = self.random.choice(potential_preys)
             prey.die()
-            self.energy += self.model.sea_turtle_gain_from_food
 
 
 class Fish(MovingAnimal):
@@ -291,15 +300,14 @@ class Fish(MovingAnimal):
     Eats plankton and jellyfish larvae. Reproduces sexually when mature. Dies when it runs out of energy.
     """
 
-    def __init__(self, unique_id, position, model, moore=True, energy=None):
+    def __init__(self, unique_id, position, model, moore=True, energy=200):
         super().__init__(unique_id, position, model, moore)
         self.energy = energy
         self.time_to_grow = self.model.fish_time_to_grow
-
-        raise NotImplementedError()
+        self.energy = energy
 
     def step(self):
-        self.random_move()
+        self.random_move(radius=5)
 
         self.energy -= 1
         self.time_to_grow -= 1
@@ -315,7 +323,7 @@ class Fish(MovingAnimal):
 
             if (
                 partners
-                and self.random.random() < self.model.fish_reproduce_probability
+                and self.random.random() < self.model.fish_reproduction_probability
             ):
                 self._reproduce()
 
@@ -360,9 +368,9 @@ class Fish(MovingAnimal):
     def _reproduce(self):
         self.energy /= 2
         fish_num = self.random.choices(
-            [1, 2, 3, 4, 5], weights=[0.5, 0.25, 0.125, 0.07, 0.055], k=1
+            [1, 2, 3, 4, 5], weights=[0.4, 0.3, 0.2, 0.05, 0.05], k=1
         )
-        for i in range(fish_num):
+        for i in range(fish_num[0]):
             child = Fish(
                 self.model.next_id(), self.position, self.model, self.moore, self.energy
             )
