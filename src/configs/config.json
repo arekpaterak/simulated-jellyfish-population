@@ -1,38 +1,40 @@
 {
   "width": 120,
   "height": 80,
+  "max_agents_per_cell": 2,
 
   "initial_population": {
-    "JellyfishMedusa": 50,
-    "JellyfishPolyp": 0,
-    "JellyfishLarva": 0,
-    "SeaTurtle": 5,
-    "Fish": 0,
-    "Plankton": 50
+    "JellyfishMedusa": 30,
+    "JellyfishPolyp": 10,
+    "JellyfishLarva": 10,
+    "SeaTurtle": 10,
+    "Fish": 40,
+    "Plankton": 300
   },
 
   "jellyfish_medusa": {
-    "time_to_grow": 10,
-    "gain_from_food": 0,
-    "reproduce_probability": 0.1,
-    "reproduce_rate": 2
+    "time_to_grow": 20,
+    "gain_from_food": 10,
+    "reproduce_probability": 0.05,
+    "reproduce_rate": 2,
+    "max_non_empty_neighbour_cells_to_reproduce":  2
   },
 
   "jellyfish_polyp": {
-    "time_to_grow": 30,
-    "gain_from_food": 0,
+    "time_to_grow": 15,
+    "gain_from_food": 10,
     "strobilation_rate": 0
   },
 
   "jellyfish_larva": {
     "time_to_grow": 10,
-    "gain_from_food": 0
+    "gain_from_food": 10
   },
 
   "fish": {
-    "time_to_grow": 0,
-    "gain_from_food": 0,
-    "reproduction_probability": 0
+    "time_to_grow": 30,
+    "gain_from_food": 100,
+    "reproduction_probability": 0.7
   },
 
   "sea_turtle": {
@@ -41,6 +43,7 @@
 
   "plankton": {
     "time_to_grow": 10,
-    "grow_probability": 0.1
+    "grow_probability": 0.02,
+    "max_non_empty_neighbour_cells_to_reproduce":  2
   }
 }

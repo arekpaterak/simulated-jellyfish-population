@@ -50,10 +50,10 @@ def agent_portrayal(agent):
         case SeaTurtle():
             portrayal = {
                 "Shape": "circle",
-                "Color": "green",
+                "Color": "orange",
                 "Filled": "true",
                 "Layer": 5,
-                "r": 5,
+                "r": 4,
             }
 
         case Fish():
@@ -62,16 +62,7 @@ def agent_portrayal(agent):
                 'Color': '#3287a8',
                 'Filled': 'true',
                 'Layer': 0,
-                'r': 0.9
-            }
-
-        case SeaTurtle():
-            portrayal = {
-                'Shape': 'circle',
-                'Color': 'purple',
-                'Filled': 'true',
-                'Layer': 0,
-                'r': 1
+                'r': 2
             }
 
         case _:
