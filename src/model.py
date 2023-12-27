@@ -42,6 +42,10 @@ class MarineEcosystem(mesa.Model):
         self.plankton_time_to_grow = config["plankton"]["time_to_grow"]
         self.plankton_grow_probability = config["plankton"]["grow_probability"]
 
+        self.fish_time_to_grow = config['fish']["time_to_grow"]
+        self.fish_gain_from_food = config['fish']['gain_from_food']
+        self.fish_reproduction_probability = config['fish']['reproduction_probability']
+
         self.schedule = RandomActivationByTypeFiltered(self)
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=False)
 
