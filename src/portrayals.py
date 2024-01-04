@@ -18,7 +18,7 @@ def agent_portrayal(agent):
                 "Shape": "circle",
                 "Color": "#f76fa3",
                 "Filled": "true",
-                "Layer": 0,
+                "Layer": 1,
                 "r": 0.3,
             }
 
@@ -26,7 +26,7 @@ def agent_portrayal(agent):
             portrayal = {
                 "Shape": "circle",
                 "Color": "#f76fa3",
-                "Layer": 0,
+                "Layer": 1,
                 "r": 0.6,
             }
 
@@ -35,7 +35,7 @@ def agent_portrayal(agent):
                 "Shape": "circle",
                 "Color": "#f76fa3",
                 "Filled": "true",
-                "Layer": 0,
+                "Layer": 1,
                 "r": 0.9,
             }
 
@@ -50,19 +50,19 @@ def agent_portrayal(agent):
         case SeaTurtle():
             portrayal = {
                 "Shape": "circle",
-                "Color": "orange",
+                "Color": "green",
                 "Filled": "true",
                 "Layer": 5,
-                "r": 4,
+                "r": 5,
             }
 
-        case Fish():
+        case Fish() as fish:
             portrayal = {
-                'Shape': 'circle',
-                'Color': '#3287a8',
-                'Filled': 'true',
-                'Layer': 0,
-                'r': 2
+                "Shape": "circle",
+                "Color": "gray",
+                "Filled": "true",
+                "Layer": 4,
+                "r": 2 if fish.is_mature() else 1,
             }
 
         case _:
