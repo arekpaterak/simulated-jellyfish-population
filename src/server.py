@@ -25,8 +25,8 @@ chart = mesa.visualization.ChartModule(
         {"Label": "Jellyfish Medusae", "Color": "#F999B7"},
         {"Label": "Jellyfish Larvae", "Color": "#F9C5D5"},
         {"Label": "Jellyfish Polyps", "Color": "#F2789F"},
-        {"Label": "Sea Turtles", "Color": "green"},
-        {"Label": "Fish", "Color": "gray"},
+        {"Label": "Sea Turtles", "Color": "#EE8A24"},
+        {"Label": "Fish", "Color": "#63AFE6"},
         {"Label": "Plankton", "Color": "yellowgreen"},
     ]
 )

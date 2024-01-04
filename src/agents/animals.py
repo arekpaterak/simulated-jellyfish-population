@@ -161,13 +161,22 @@ class JellyfishMedusa(MovingAnimal):
             ]
             if available_food:
                 plankton: Plankton = self.random.choice(available_food)
-                energy_gain = self.model.fish_gain_from_food * plankton.density
+                energy_gain = self.model.jellyfish_medusa_gain_from_food * plankton.density
                 plankton.die()
                 self.energy += energy_gain
 
         def _eat_fish():
-            # TODO
-            pass
+            neighbors = self.model.grid.get_neighbors(
+                self.position, self.moore, include_center=True
+            )
+            available_food = [
+                agent for agent in neighbors if isinstance(agent, Fish) and not agent.is_mature()
+            ]
+            if available_food:
+                fish: Fish = self.random.choice(available_food)
+                energy_gain = self.model.jellyfish_medusa_gain_from_food
+                fish.die()
+                self.energy += energy_gain
 
         _eat_plankton()
         _eat_fish()
