@@ -22,21 +22,20 @@ def agent_portrayal(agent):
                 "r": 0.3,
             }
 
-        case JellyfishPolyp():
+        case JellyfishPolyp() as polyp:
+            # https://icons8.com/icon/JrrHSGz7NmRU/coral
             portrayal = {
-                "Shape": "circle",
-                "Color": "#f76fa3",
+                "Shape": "src/resources/polyp1.png" if polyp.random.random() < 0.5 else "src/resources/polyp2.png",
+                "scale": 2.5,
                 "Layer": 1,
-                "r": 0.6,
             }
 
-        case JellyfishMedusa():
+        case JellyfishMedusa() as medusa:
+            # https://icons8.com/icon/NU0xLnU5q3q8/jellyfish
             portrayal = {
-                "Shape": "circle",
-                "Color": "#f76fa3",
-                "Filled": "true",
+                "Shape": "src/resources/jelly1.png" if medusa.random.random() < 0.5 else "src/resources/jelly2.png",
+                "scale": 3,
                 "Layer": 1,
-                "r": 0.9,
             }
 
         case Plankton():
@@ -47,22 +46,20 @@ def agent_portrayal(agent):
                 "r": 0.5,
             }
 
-        case SeaTurtle():
+        case SeaTurtle() as turtle:
+            # https://icons8.com/icon/GZZxLoYInRiK/turtle
             portrayal = {
-                "Shape": "circle",
-                "Color": "green",
-                "Filled": "true",
+                "Shape": "src/resources/turtle1.png" if turtle.random.random() < 0.5 else "src/resources/turtle2.png",
+                "scale": 7,
                 "Layer": 5,
-                "r": 5,
             }
 
         case Fish() as fish:
+            # https://icons8.com/icon/u6IuaW242HuR/fish
             portrayal = {
-                "Shape": "circle",
-                "Color": "gray",
-                "Filled": "true",
-                "Layer": 4,
-                "r": 2 if fish.is_mature() else 1,
+                'Shape': "src/resources/fish1.png" if fish.random.random() < 0.5 else "src/resources/fish2.png",
+                "scale": 3 if fish.is_mature() else 1,
+                'Layer': 4,
             }
 
         case _:

@@ -5,10 +5,10 @@ from model import MarineEcosystem
 
 import os
 
-
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIGS_DIR = "configs"
 CONFIG_FILE = "config.json"
-CONFIG_FILE_PATH = os.path.join(CONFIGS_DIR, CONFIG_FILE)
+CONFIG_FILE_PATH = f"{ROOT_DIR}/{CONFIGS_DIR}/{CONFIG_FILE}"
 
 with open(CONFIG_FILE_PATH) as file:
     config = json.load(file)
