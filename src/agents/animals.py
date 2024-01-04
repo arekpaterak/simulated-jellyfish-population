@@ -1,3 +1,4 @@
+from enum import Enum
 import mesa
 
 from .base import BaseSeaAgent
@@ -13,9 +14,15 @@ class Animal(BaseSeaAgent):
     """
 
     def __init__(
-        self, unique_id: int, position: Position, model: mesa.Model, moore: bool = True
+        self,
+        unique_id: int,
+        position: Position,
+        model: mesa.Model,
+        moore: bool = True,
+        energy: int = None,
     ) -> None:
         super().__init__(unique_id, position, model, moore)
+        self.energy = energy
 
     def _find_empty_cell_in_neighborhood(self, radius: int = 1) -> Position:
         """
@@ -56,8 +63,9 @@ class MovingAnimal(Animal):
         position: Position,
         model: mesa.Model,
         moore: bool = True,
+        energy: int = None,
     ) -> None:
-        super().__init__(unique_id, position, model, moore)
+        super().__init__(unique_id, position, model, moore, energy)
 
     def random_move(self, radius: int = 1, look_for=None) -> None:
         """
@@ -72,13 +80,22 @@ class MovingAnimal(Animal):
             self.position, self.moore, include_center=False, radius=radius
         )
 
-        if self.energy < self.max_energy:
-            contains_agent = lambda position: any(isinstance(agent, look_for) for agent in self.model.grid.get_cell_list_contents([position]))
-            best_moves = [position for position in possible_moves if contains_agent(position)]
+        if look_for:
+            contains_agent = lambda position: any(
+                isinstance(agent, look_for)
+                for agent in self.model.grid.get_cell_list_contents([position])
+            )
+            best_moves = [
+                position for position in possible_moves if contains_agent(position)
+            ]
         else:
             best_moves = possible_moves
 
-        next_position = self.random.choice(best_moves) if best_moves else self.random.choice(possible_moves)
+        next_position = (
+            self.random.choice(best_moves)
+            if best_moves
+            else self.random.choice(possible_moves)
+        )
 
         self.position = next_position
         if next_position:
@@ -97,13 +114,19 @@ class JellyfishMedusa(MovingAnimal):
     - a parameter that determines the number of offspring
     """
 
+    class Sex(Enum):
+        MALE = 0
+        FEMALE = 1
+
+        def is_opposite(self, other):
+            return self != other
+
     def __init__(self, unique_id, position, model, moore=True, max_energy=100):
-        super().__init__(unique_id, position, model, moore)
+        super().__init__(unique_id, position, model, moore, energy=max_energy)
         self.max_energy = max_energy
-        self.energy = self.max_energy
         self.time_to_grow = self.model.jellyfish_medusa_time_to_grow
 
-        # TODO: think if we need males and females
+        self.sex = self.Sex.MALE if self.random.random() < 0.5 else self.Sex.FEMALE
 
     def step(self):
         self.random_move(radius=3, look_for=Plankton)
@@ -129,22 +152,24 @@ class JellyfishMedusa(MovingAnimal):
                 self._reproduce()
 
     def _eat(self):
-        self._eat_plankton()
-        self._eat_fish()
+        def _eat_plankton():
+            neighbors = self.model.grid.get_neighbors(
+                self.position, self.moore, include_center=True
+            )
+            available_food = [
+                agent for agent in neighbors if isinstance(agent, Plankton)
+            ]
+            if available_food:
+                plankton: Plankton = self.random.choice(available_food)
+                energy_gain = self.model.fish_gain_from_food * plankton.density
+                plankton.die()
+                self.energy += energy_gain
 
-    def _eat_plankton(self):
-        neighbors = self.model.grid.get_neighbors(
-            self.position, self.moore, include_center=True
-        )
-        available_food = [agent for agent in neighbors if isinstance(agent, Plankton)]
-        if available_food:
-            plankton: Plankton = self.random.choice(available_food)
-            energy_gain = self.model.fish_gain_from_food * plankton.density
-            plankton.die()
-            self.energy += energy_gain
+        def _eat_fish():
+            pass
 
-    def _eat_fish(self):
-        pass
+        _eat_plankton()
+        _eat_fish()
 
     def is_mature(self):
         return self.time_to_grow < 0
@@ -158,7 +183,17 @@ class JellyfishMedusa(MovingAnimal):
             for agent in neighbors
             if isinstance(agent, self.__class__) and agent is not self
         ]
-        partners = [partner for partner in potential_partners if partner.is_mature()]
+        partners = [
+            partner
+            for partner in potential_partners
+            if partner.is_mature() and self.sex.is_opposite(partner.sex)
+        ]
+
+        if partners:
+            print(
+                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners ({partners[0].sex.name})"
+            )
+
         return partners
 
     def _reproduce(self):
@@ -170,10 +205,22 @@ class JellyfishMedusa(MovingAnimal):
         """
 
         ### Jesli wiecej niz 4 zajete pola w sasiedztwie - nie rozmnaża się
-        neighborhood = list(self.model.grid.get_neighborhood(
-            self.position, self.moore, include_center=False, radius=1
-        ))
-        num_agents = len([1 for position in neighborhood if [agent for agent in self.model.grid.get_cell_list_contents([position]) if not isinstance(agent, Plankton)]])
+        neighborhood = list(
+            self.model.grid.get_neighborhood(
+                self.position, self.moore, include_center=False, radius=1
+            )
+        )
+        num_agents = len(
+            [
+                1
+                for position in neighborhood
+                if [
+                    agent
+                    for agent in self.model.grid.get_cell_list_contents([position])
+                    if not isinstance(agent, Plankton)
+                ]
+            ]
+        )
         if num_agents > self.model.jellyfish_empty_cells_to_reproduce:
             return
 
@@ -189,23 +236,18 @@ class JellyfishMedusa(MovingAnimal):
                 self.model.schedule.add(child)
 
 
-class JellyfishPolyp(MovingAnimal):
+class JellyfishPolyp(Animal):
     """
     An agent representing a jellyfish polyp.
 
     It can reproduce asexually via strobilation. It doesn't move. It isn't eaten by anything.
     """
 
-    def __init__(self, unique_id, position, model, moore=True, max_energy=80):
-        super().__init__(unique_id, position, model, moore)
+    def __init__(self, unique_id, position, model, moore=True, energy=50):
+        super().__init__(unique_id, position, model, moore, energy)
         self.time_to_grow = self.model.jellyfish_polyp_time_to_grow
-        self.moore = moore
-        self.max_energy = max_energy
-        self.energy = self.max_energy
 
     def step(self):
-        self.random_move(radius=1, look_for=Plankton)
-
         self.time_to_grow -= 1
 
         if self.energy < 0:
@@ -224,25 +266,26 @@ class JellyfishPolyp(MovingAnimal):
             self.energy -= 1
 
 
-class JellyfishLarva(Animal):
+class JellyfishLarva(MovingAnimal):
     """
     An agent representing a jellyfish larva.
 
     Moves, eats plankton and transforms into a polyp after growing up enough.
     """
 
-    def __init__(self, unique_id, position, model, moore=True):
-        super().__init__(unique_id, position, model, moore)
+    def __init__(self, unique_id, position, model, moore=True, energy=60):
+        super().__init__(unique_id, position, model, moore, energy)
         self.time_to_grow = self.model.jellyfish_larva_time_to_grow
 
     def step(self):
+        self.random_move()
 
         self.time_to_grow -= 1
         if self.time_to_grow < 0:
-            self.transform()
+            self._transform()
             return
 
-    def transform(self):
+    def _transform(self):
         polyp = JellyfishPolyp(self.model.next_id(), self.position, self.model)
         self.model.grid.place_agent(polyp, self.position)
         self.model.schedule.add(polyp)
@@ -258,29 +301,25 @@ class SeaTurtle(MovingAnimal):
     Eats jellyfish in their medusa phase. Lives so long that it doesn't die in the model. Its reproduction is not a part of the model.
     """
 
-    def __init__(self, unique_id, position, model, moore=True, max_energy=1000):
-        super().__init__(unique_id, position, model, moore)
-        self.max_energy = max_energy
-        self.energy = self.max_energy
-
+    def __init__(self, unique_id, position, model, moore=True, energy=1000):
+        super().__init__(unique_id, position, model, moore, energy=energy)
 
     def step(self):
         self.random_move(radius=5, look_for=JellyfishMedusa)
 
-        self.energy -= 1
-        if self.energy < self.max_energy:
-            self._eat()
+        self._eat()
 
     def _eat(self):
         neighbors = self.model.grid.get_neighbors(
             self.position, self.moore, include_center=True, radius=5
         )
-        potential_preys = [
-            agent for agent in neighbors if isinstance(agent, JellyfishMedusa)
-        ]
-        for prey in potential_preys:
+        preys = [agent for agent in neighbors if isinstance(agent, JellyfishMedusa)]
+        for prey in preys:
             self.energy += prey.energy
             prey.die()
+
+        if preys:
+            print(f"Turtle ate {len(preys)} jellyfish medusae.")
 
 
 class Fish(MovingAnimal):
@@ -291,9 +330,8 @@ class Fish(MovingAnimal):
     """
 
     def __init__(self, unique_id, position, model, moore=True, max_energy=200):
-        super().__init__(unique_id, position, model, moore)
+        super().__init__(unique_id, position, model, moore, energy=max_energy)
         self.max_energy = max_energy
-        self.energy = self.max_energy
         self.time_to_grow = self.model.fish_time_to_grow
 
     def step(self):

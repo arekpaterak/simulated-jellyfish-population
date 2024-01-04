@@ -18,7 +18,7 @@ def agent_portrayal(agent):
                 "Shape": "circle",
                 "Color": "#f76fa3",
                 "Filled": "true",
-                "Layer": 0,
+                "Layer": 1,
                 "r": 0.3,
             }
 
@@ -27,7 +27,7 @@ def agent_portrayal(agent):
             portrayal = {
                 "Shape": "src/resources/polyp1.png" if polyp.random.random() < 0.5 else "src/resources/polyp2.png",
                 "scale": 2.5,
-                "Layer": 0,
+                "Layer": 1,
             }
 
         case JellyfishMedusa() as medusa:
@@ -35,7 +35,7 @@ def agent_portrayal(agent):
             portrayal = {
                 "Shape": "src/resources/jelly1.png" if medusa.random.random() < 0.5 else "src/resources/jelly2.png",
                 "scale": 3,
-                "Layer": 0,
+                "Layer": 1,
             }
 
         case Plankton():
@@ -58,9 +58,8 @@ def agent_portrayal(agent):
             # https://icons8.com/icon/u6IuaW242HuR/fish
             portrayal = {
                 'Shape': "src/resources/fish1.png" if fish.random.random() < 0.5 else "src/resources/fish2.png",
-                'Layer': 0,
                 "scale": 3 if fish.is_mature() else 1,
-
+                'Layer': 4,
             }
 
         case _:
