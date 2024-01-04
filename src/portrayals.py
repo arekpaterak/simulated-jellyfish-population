@@ -22,21 +22,20 @@ def agent_portrayal(agent):
                 "r": 0.3,
             }
 
-        case JellyfishPolyp():
+        case JellyfishPolyp() as polyp:
+            # https://icons8.com/icon/JrrHSGz7NmRU/coral
             portrayal = {
-                "Shape": "circle",
-                "Color": "#f76fa3",
+                "Shape": "src/resources/polyp1.png" if polyp.random.random() < 0.5 else "src/resources/polyp2.png",
+                "scale": 2.5,
                 "Layer": 0,
-                "r": 0.6,
             }
 
-        case JellyfishMedusa():
+        case JellyfishMedusa() as medusa:
+            # https://icons8.com/icon/NU0xLnU5q3q8/jellyfish
             portrayal = {
-                "Shape": "circle",
-                "Color": "#f76fa3",
-                "Filled": "true",
+                "Shape": "src/resources/jelly1.png" if medusa.random.random() < 0.5 else "src/resources/jelly2.png",
+                "scale": 3,
                 "Layer": 0,
-                "r": 0.9,
             }
 
         case Plankton():
@@ -47,22 +46,21 @@ def agent_portrayal(agent):
                 "r": 0.5,
             }
 
-        case SeaTurtle():
+        case SeaTurtle() as turtle:
+            # https://icons8.com/icon/GZZxLoYInRiK/turtle
             portrayal = {
-                "Shape": "circle",
-                "Color": "orange",
-                "Filled": "true",
+                "Shape": "src/resources/turtle1.png" if turtle.random.random() < 0.5 else "src/resources/turtle2.png",
+                "scale": 7,
                 "Layer": 5,
-                "r": 4,
             }
 
-        case Fish():
+        case Fish() as fish:
+            # https://icons8.com/icon/u6IuaW242HuR/fish
             portrayal = {
-                'Shape': 'circle',
-                'Color': '#3287a8',
-                'Filled': 'true',
+                'Shape': "src/resources/fish1.png" if fish.random.random() < 0.5 else "src/resources/fish2.png",
                 'Layer': 0,
-                'r': 2
+                "scale": 3 if fish.is_mature() else 1,
+
             }
 
         case _:
