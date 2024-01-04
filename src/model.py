@@ -12,7 +12,7 @@ class MarineEcosystem(mesa.Model):
     A model of a whole environment in the simulation.
     """
 
-    def __init__(self, config_filepath) -> None:
+    def __init__(self, config_filepath, **kwargs) -> None:
         super().__init__()
 
         with open(config_filepath) as file:
@@ -70,8 +70,21 @@ class MarineEcosystem(mesa.Model):
             }
         )
 
-        for agent in config["initial_population"]:
-            self._init_population(globals()[agent], config["initial_population"][agent])
+        # for agent in config["initial_population"]:
+        #     self._init_population(globals()[agent], config["initial_population"][agent])
+
+        self._init_population(
+            JellyfishMedusa, kwargs["initial_population_jellyfish_medusa"]
+        )
+        self._init_population(
+            JellyfishPolyp, kwargs["initial_population_jellyfish_polyp"]
+        )
+        self._init_population(
+            JellyfishLarva, kwargs["initial_population_jellyfish_larva"]
+        )
+        self._init_population(SeaTurtle, kwargs["initial_population_sea_turtle"])
+        self._init_population(Fish, kwargs["initial_population_fish"])
+        self._init_population(Plankton, kwargs["initial_population_plankton"])
 
         self.running = True
 

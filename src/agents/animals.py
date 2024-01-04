@@ -166,6 +166,7 @@ class JellyfishMedusa(MovingAnimal):
                 self.energy += energy_gain
 
         def _eat_fish():
+            # TODO
             pass
 
         _eat_plankton()

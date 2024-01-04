@@ -1,7 +1,6 @@
 import json
 import mesa
 from portrayals import agent_portrayal
-from mesa.visualization.ModularVisualization import ModularServer
 from model import MarineEcosystem
 
 import os
@@ -33,9 +32,53 @@ chart = mesa.visualization.ChartModule(
     ]
 )
 
-server = ModularServer(
+model_params = {
+    "title": mesa.visualization.StaticText("Parameters:"),
+    "initial_population_jellyfish_medusa": mesa.visualization.Slider(
+        "Initial Jellyfish Medusae Population",
+        config["initial_population"]["JellyfishMedusa"],
+        0,
+        500,
+        10,
+        description="xd",
+    ),
+    "initial_population_jellyfish_polyp": mesa.visualization.Slider(
+        "Initial Jellyfish Polyps Population",
+        config["initial_population"]["JellyfishPolyp"],
+        0,
+        100,
+        10,
+    ),
+    "initial_population_jellyfish_larva": mesa.visualization.Slider(
+        "Initial Jellyfish Larvae Population",
+        config["initial_population"]["JellyfishLarva"],
+        0,
+        500,
+        10,
+    ),
+    "initial_population_fish": mesa.visualization.Slider(
+        "Initial Fish Population", config["initial_population"]["Fish"], 0, 500, 10
+    ),
+    "initial_population_plankton": mesa.visualization.Slider(
+        "Initial Plankton Population",
+        config["initial_population"]["Plankton"],
+        0,
+        1000,
+        100,
+    ),
+    "initial_population_sea_turtle": mesa.visualization.Slider(
+        "Initial Sea Turtles Population",
+        config["initial_population"]["SeaTurtle"],
+        0,
+        10,
+        1,
+    ),
+    "config_filepath": CONFIG_FILE_PATH,
+}
+
+server = mesa.visualization.ModularServer(
     model_cls=MarineEcosystem,
-    model_params={"config_filepath": CONFIG_FILE_PATH},
+    model_params=model_params,
     visualization_elements=[grid, chart],
     name="Simulated Jellyfish Population",
 )
