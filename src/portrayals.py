@@ -25,7 +25,9 @@ def agent_portrayal(agent):
         case JellyfishPolyp() as polyp:
             # https://icons8.com/icon/JrrHSGz7NmRU/coral
             portrayal = {
-                "Shape": "src/resources/polyp1.png" if polyp.random.random() < 0.5 else "src/resources/polyp2.png",
+                "Shape": "resources/polyp1.png"
+                if polyp.random.random() < 0.5
+                else "resources/polyp2.png",
                 "scale": 2.5,
                 "Layer": 1,
             }
@@ -33,7 +35,9 @@ def agent_portrayal(agent):
         case JellyfishMedusa() as medusa:
             # https://icons8.com/icon/NU0xLnU5q3q8/jellyfish
             portrayal = {
-                "Shape": "src/resources/jelly1.png" if medusa.random.random() < 0.5 else "src/resources/jelly2.png",
+                "Shape": "resources/jelly1.png"
+                if medusa.random.random() < 0.5
+                else "resources/jelly2.png",
                 "scale": 3,
                 "Layer": 1,
             }
@@ -49,7 +53,9 @@ def agent_portrayal(agent):
         case SeaTurtle() as turtle:
             # https://icons8.com/icon/GZZxLoYInRiK/turtle
             portrayal = {
-                "Shape": "src/resources/turtle1.png" if turtle.random.random() < 0.5 else "src/resources/turtle2.png",
+                "Shape": "resources/turtle1.png"
+                if turtle.random.random() < 0.5
+                else "resources/turtle2.png",
                 "scale": 7,
                 "Layer": 5,
             }
@@ -57,9 +63,11 @@ def agent_portrayal(agent):
         case Fish() as fish:
             # https://icons8.com/icon/u6IuaW242HuR/fish
             portrayal = {
-                'Shape': "src/resources/fish1.png" if fish.random.random() < 0.5 else "src/resources/fish2.png",
+                "Shape": "resources/fish1.png"
+                if fish.random.random() < 0.5
+                else "resources/fish2.png",
                 "scale": 3 if fish.is_mature() else 1,
-                'Layer': 4,
+                "Layer": 4,
             }
 
         case _:
