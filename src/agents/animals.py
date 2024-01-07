@@ -339,10 +339,18 @@ class Fish(MovingAnimal):
     Eats plankton and jellyfish larvae. Reproduces sexually when mature. Dies when it runs out of energy.
     """
 
+    class Sex(Enum):
+        MALE = 0
+        FEMALE = 1
+
+        def is_opposite(self, other):
+            return self != other
+
     def __init__(self, unique_id, position, model, moore=True, max_energy=200):
         super().__init__(unique_id, position, model, moore, energy=max_energy)
         self.max_energy = max_energy
         self.time_to_grow = self.model.fish_time_to_grow
+        self.sex = self.Sex.MALE if self.random.random() < 0.5 else self.Sex.FEMALE
 
     def step(self):
         self.random_move(radius=4, look_for=JellyfishLarva)
@@ -401,7 +409,13 @@ class Fish(MovingAnimal):
             for agent in neighbors
             if isinstance(agent, self.__class__) and agent is not self
         ]
-        partners = [partner for partner in potential_partners if partner.is_mature()]
+        partners = [partner for partner in potential_partners if partner.is_mature() and self.sex.is_opposite(partner.sex)]
+
+        if partners:
+            print(
+                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners ({partners[0].sex.name})"
+            )
+
         return partners
 
     def _reproduce(self):
