@@ -141,7 +141,7 @@ class JellyfishMedusa(MovingAnimal):
             self.die()
             return
 
-        if self.is_mature():
+        if self.is_mature() and self.sex == self.Sex.FEMALE:
             partners = self._find_partners()
 
             if (
@@ -201,7 +201,7 @@ class JellyfishMedusa(MovingAnimal):
 
         if partners:
             print(
-                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners ({partners[0].sex.name})"
+                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners"
             )
 
         return partners
@@ -365,7 +365,7 @@ class Fish(MovingAnimal):
         if self.energy < self.max_energy:
             self._eat()
 
-        if self.is_mature():
+        if self.is_mature() and self.sex == self.Sex.FEMALE:
             partners = self._find_partners()
 
             if (
@@ -413,7 +413,7 @@ class Fish(MovingAnimal):
 
         if partners:
             print(
-                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners ({partners[0].sex.name})"
+                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners"
             )
 
         return partners
