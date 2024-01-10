@@ -185,6 +185,8 @@ class JellyfishMedusa(MovingAnimal):
         return self.time_to_grow < 0
 
     def _find_partners(self):
+        if self.sex == self.Sex.MALE:
+            return
         neighbors = self.model.grid.get_neighbors(
             self.position, self.moore, include_center=True
         )
@@ -201,7 +203,7 @@ class JellyfishMedusa(MovingAnimal):
 
         if partners:
             print(
-                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners ({partners[0].sex.name})"
+                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners"
             )
 
         return partners
@@ -401,6 +403,8 @@ class Fish(MovingAnimal):
             return
 
     def _find_partners(self):
+        if self.sex == self.Sex.MALE:
+            return
         neighbors = self.model.grid.get_neighbors(
             self.position, self.moore, include_center=True
         )
@@ -413,7 +417,7 @@ class Fish(MovingAnimal):
 
         if partners:
             print(
-                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners ({partners[0].sex.name})"
+                f"{self.__class__.__name__} ({self.sex.name}) found {len(partners)} partners"
             )
 
         return partners
