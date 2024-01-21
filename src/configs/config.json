@@ -38,8 +38,8 @@
 
   "fish": {
     "time_to_grow": 30,
-    "gain_from_food": 100,
-    "reproduction_probability": 0.7
+    "gain_from_food": 20,
+    "reproduction_probability": 0.4
   },
 
   "sea_turtle": {

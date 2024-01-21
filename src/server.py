@@ -44,15 +44,15 @@ model_params = {
         "Initial Jellyfish Polyps Population",
         config["initial_population"]["JellyfishPolyp"],
         0,
-        100,
         10,
+        1,
     ),
     "initial_population_jellyfish_larva": mesa.visualization.Slider(
         "Initial Jellyfish Larvae Population",
         config["initial_population"]["JellyfishLarva"],
         0,
-        500,
-        10,
+        25,
+        1,
     ),
     "initial_population_fish": mesa.visualization.Slider(
         "Initial Fish Population", config["initial_population"]["Fish"], 0, 500, 10
