@@ -3,18 +3,23 @@
   "height": 80,
   "max_agents_per_cell": 2,
 
+  "max_allowed_temperature": 35,
+  "max_used_temperature": 20,
+  "min_allowed_temperature": 0,
+  "min_used_temperature": 10,
+
   "initial_population": {
     "JellyfishMedusa": 30,
-    "JellyfishPolyp": 10,
-    "JellyfishLarva": 10,
-    "SeaTurtle": 10,
-    "Fish": 40,
+    "JellyfishPolyp": 0,
+    "JellyfishLarva": 0,
+    "SeaTurtle": 0,
+    "Fish": 0,
     "Plankton": 300
   },
 
   "jellyfish_medusa": {
-    "time_to_grow": 20,
-    "gain_from_food": 10,
+    "time_to_grow": 10,
+    "gain_from_food": 3,
     "reproduce_probability": 0.05,
     "reproduce_rate": 2,
     "max_non_empty_neighbour_cells_to_reproduce":  2
@@ -22,13 +27,13 @@
 
   "jellyfish_polyp": {
     "time_to_grow": 15,
-    "gain_from_food": 10,
+    "gain_from_food": 3,
     "strobilation_rate": 0
   },
 
   "jellyfish_larva": {
     "time_to_grow": 10,
-    "gain_from_food": 10
+    "gain_from_food": 3
   },
 
   "fish": {
@@ -42,8 +47,8 @@
   },
 
   "plankton": {
-    "time_to_grow": 10,
+    "time_to_grow": 6,
     "grow_probability": 0.02,
-    "max_non_empty_neighbour_cells_to_reproduce":  2
+    "max_non_empty_neighbour_cells_to_reproduce":  8
   }
 }

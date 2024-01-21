@@ -3,7 +3,6 @@ import mesa
 from portrayals import agent_portrayal
 from model import MarineEcosystem
 
-import os
 
 CONFIGS_DIR = "configs"
 CONFIG_FILE = "config.json"

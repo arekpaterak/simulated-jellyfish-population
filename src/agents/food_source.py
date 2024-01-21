@@ -31,7 +31,7 @@ class Plankton(FoodSource):
         Plankton density grows at each step, when it reaches 1, new plankton agent appears at random neighbour grid cell
         """
         self.time_to_grow -= 1
-        if self.time_to_grow <= 0 and self.grow_probability < self.random.random():
+        if self.time_to_grow <= 0:
             self.grow()
 
     def grow(self):
@@ -50,7 +50,11 @@ class Plankton(FoodSource):
         new_position = self.random.choice(
             self.model.grid.get_neighborhood(self.position, self.moore, False)
         )
-        if self.model.grid.is_cell_empty(new_position):
+
+        grow = (self.model.temperature - self.model.min_allowed_temperature)
+        grow = grow / (self.model.max_allowed_temperature - self.model.min_allowed_temperature)
+
+        if self.model.grid.is_cell_empty(new_position) and grow > self.random.random():
             plankton = Plankton(self.model.next_id(), new_position, self.model)
             self.model.grid.place_agent(plankton, new_position)
             self.model.schedule.add(plankton)

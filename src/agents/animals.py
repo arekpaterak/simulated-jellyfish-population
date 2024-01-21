@@ -14,12 +14,12 @@ class Animal(BaseSeaAgent):
     """
 
     def __init__(
-        self,
-        unique_id: int,
-        position: Position,
-        model: mesa.Model,
-        moore: bool = True,
-        energy: int = None,
+            self,
+            unique_id: int,
+            position: Position,
+            model: mesa.Model,
+            moore: bool = True,
+            energy: int = None,
     ) -> None:
         super().__init__(unique_id, position, model, moore)
         self.energy = energy
@@ -39,7 +39,7 @@ class Animal(BaseSeaAgent):
         for next_position in neighborhood:
             cell_agents = self.model.grid.get_cell_list_contents([next_position])
             if self.model.grid.is_cell_empty(next_position) or all(
-                [agent.is_food_source() for agent in cell_agents]
+                    [agent.is_food_source() for agent in cell_agents]
             ):
                 return next_position
         return None
@@ -58,12 +58,12 @@ class MovingAnimal(Animal):
     """
 
     def __init__(
-        self,
-        unique_id: int,
-        position: Position,
-        model: mesa.Model,
-        moore: bool = True,
-        energy: int = None,
+            self,
+            unique_id: int,
+            position: Position,
+            model: mesa.Model,
+            moore: bool = True,
+            energy: int = None,
     ) -> None:
         super().__init__(unique_id, position, model, moore, energy)
 
@@ -121,7 +121,7 @@ class JellyfishMedusa(MovingAnimal):
         def is_opposite(self, other):
             return self != other
 
-    def __init__(self, unique_id, position, model, moore=True, max_energy=100):
+    def __init__(self, unique_id, position, model, moore=True, max_energy=7):
         super().__init__(unique_id, position, model, moore, energy=max_energy)
         self.max_energy = max_energy
         self.time_to_grow = self.model.jellyfish_medusa_time_to_grow
@@ -145,9 +145,9 @@ class JellyfishMedusa(MovingAnimal):
             partners = self._find_partners()
 
             if (
-                partners
-                and self.random.random()
-                < self.model.jellyfish_medusa_reproduce_probability
+                    partners
+                    and self.random.random()
+                    < self.model.jellyfish_medusa_reproduce_probability
             ):
                 self._reproduce()
 
@@ -253,7 +253,7 @@ class JellyfishPolyp(Animal):
     It can reproduce asexually via strobilation. It doesn't move. It isn't eaten by anything.
     """
 
-    def __init__(self, unique_id, position, model, moore=True, energy=50):
+    def __init__(self, unique_id, position, model, moore=True, energy=30):
         super().__init__(unique_id, position, model, moore, energy)
         self.time_to_grow = self.model.jellyfish_polyp_time_to_grow
 
@@ -369,8 +369,8 @@ class Fish(MovingAnimal):
             partners = self._find_partners()
 
             if (
-                partners
-                and self.random.random() < self.model.fish_reproduce_probability
+                    partners
+                    and self.random.random() < self.model.fish_reproduce_probability
             ):
                 self._reproduce()
 
@@ -409,7 +409,8 @@ class Fish(MovingAnimal):
             for agent in neighbors
             if isinstance(agent, self.__class__) and agent is not self
         ]
-        partners = [partner for partner in potential_partners if partner.is_mature() and self.sex.is_opposite(partner.sex)]
+        partners = [partner for partner in potential_partners if
+                    partner.is_mature() and self.sex.is_opposite(partner.sex)]
 
         if partners:
             print(
