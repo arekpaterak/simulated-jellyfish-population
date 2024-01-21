@@ -3,7 +3,7 @@
   "height": 80,
   "max_agents_per_cell": 2,
 
-  "max_allowed_temperature": 35,
+  "max_allowed_temperature": 30,
   "max_used_temperature": 20,
   "min_allowed_temperature": 0,
   "min_used_temperature": 10,

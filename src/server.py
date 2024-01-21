@@ -71,6 +71,20 @@ model_params = {
         10,
         1,
     ),
+    "min_used_temperature": mesa.visualization.Slider(
+        "Minimal Allowed Temperature",
+        config["min_used_temperature"],
+        config["min_allowed_temperature"],
+        config["max_allowed_temperature"],
+        1,
+    ),
+    "max_used_temperature": mesa.visualization.Slider(
+        "Maximal Allowed Temperature",
+        config["max_used_temperature"],
+        config["min_allowed_temperature"],
+        config["max_allowed_temperature"],
+        1,
+    ),
     "config_filepath": CONFIG_FILE_PATH,
 }
 

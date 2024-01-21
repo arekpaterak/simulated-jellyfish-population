@@ -121,7 +121,7 @@ class JellyfishMedusa(MovingAnimal):
         def is_opposite(self, other):
             return self != other
 
-    def __init__(self, unique_id, position, model, moore=True, max_energy=7):
+    def __init__(self, unique_id, position, model, moore=True, max_energy=12):
         super().__init__(unique_id, position, model, moore, energy=max_energy)
         self.max_energy = max_energy
         self.time_to_grow = self.model.jellyfish_medusa_time_to_grow
@@ -225,10 +225,10 @@ class JellyfishMedusa(MovingAnimal):
                 1
                 for position in neighborhood
                 if [
-                    agent
-                    for agent in self.model.grid.get_cell_list_contents([position])
-                    if not isinstance(agent, Plankton)
-                ]
+                agent
+                for agent in self.model.grid.get_cell_list_contents([position])
+                if not isinstance(agent, Plankton)
+            ]
             ]
         )
         if num_agents > self.model.jellyfish_empty_cells_to_reproduce:

@@ -1,4 +1,5 @@
 import math
+from random import Random
 
 import mesa
 
@@ -125,11 +126,12 @@ class MarineEcosystem(mesa.Model):
         self.temperature = self.temperature + float(self.max_used_temperature + self.min_used_temperature) / 2
 
         for _ in range(5):
-            x = self.random.randrange(self.width)
-            y = self.random.randrange(self.height)
-            plankton = Plankton(self.next_id(), (x,y), self)
-            self.grid.place_agent(plankton, (x,y))
-            self.schedule.add(plankton)
+            if self.plankton_reproduction_probability() > 0.0:
+                x = self.random.randrange(self.width)
+                y = self.random.randrange(self.height)
+                plankton = Plankton(self.next_id(), (x, y), self)
+                self.grid.place_agent(plankton, (x, y))
+                self.schedule.add(plankton)
 
     #     self.remove_redundant_agents(self.max_agents_per_cell)
 
@@ -142,3 +144,6 @@ class MarineEcosystem(mesa.Model):
     #                     continue
     #                 self.grid.remove_agent(agent)
     #                 self.schedule.remove(agent)
+
+    def plankton_reproduction_probability(self):
+        return math.sin(math.pi/2 * self.temperature / (self.max_allowed_temperature - self.min_allowed_temperature))
