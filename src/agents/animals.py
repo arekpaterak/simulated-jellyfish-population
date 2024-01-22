@@ -346,7 +346,7 @@ class Fish(MovingAnimal):
         def is_opposite(self, other):
             return self != other
 
-    def __init__(self, unique_id, position, model, moore=True, max_energy=10):
+    def __init__(self, unique_id, position, model, moore=True, max_energy=100):
         super().__init__(unique_id, position, model, moore, energy=max_energy)
         self.max_energy = max_energy
         self.time_to_grow = self.model.fish_time_to_grow
