@@ -3,7 +3,6 @@ import mesa
 from portrayals import agent_portrayal
 from model import MarineEcosystem
 
-import os
 
 CONFIGS_DIR = "configs"
 CONFIG_FILE = "config.json"
@@ -45,15 +44,15 @@ model_params = {
         "Initial Jellyfish Polyps Population",
         config["initial_population"]["JellyfishPolyp"],
         0,
-        100,
         10,
+        1,
     ),
     "initial_population_jellyfish_larva": mesa.visualization.Slider(
         "Initial Jellyfish Larvae Population",
         config["initial_population"]["JellyfishLarva"],
         0,
-        500,
-        10,
+        25,
+        1,
     ),
     "initial_population_fish": mesa.visualization.Slider(
         "Initial Fish Population", config["initial_population"]["Fish"], 0, 500, 10
@@ -70,6 +69,20 @@ model_params = {
         config["initial_population"]["SeaTurtle"],
         0,
         10,
+        1,
+    ),
+    "min_used_temperature": mesa.visualization.Slider(
+        "Minimal Allowed Temperature",
+        config["min_used_temperature"],
+        config["min_allowed_temperature"],
+        config["max_allowed_temperature"],
+        1,
+    ),
+    "max_used_temperature": mesa.visualization.Slider(
+        "Maximal Allowed Temperature",
+        config["max_used_temperature"],
+        config["min_allowed_temperature"],
+        config["max_allowed_temperature"],
         1,
     ),
     "config_filepath": CONFIG_FILE_PATH,
