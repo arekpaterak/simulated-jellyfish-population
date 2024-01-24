@@ -24,8 +24,6 @@ class MarineEcosystem(mesa.Model):
         self.width = config["width"]
         self.height = config["height"]
 
-        self.max_agents_per_cell = config["max_agents_per_cell"]
-
         self.jellyfish_larva_time_to_grow = config["jellyfish_larva"]["time_to_grow"]
 
         self.jellyfish_polyp_time_to_grow = config["jellyfish_polyp"]["time_to_grow"]
@@ -57,8 +55,12 @@ class MarineEcosystem(mesa.Model):
         self.fish_gain_from_food = config["fish"]["gain_from_food"]
         self.fish_reproduce_probability = config["fish"]["reproduction_probability"]
 
-        self.max_allowed_temperature = config["max_allowed_temperature"]  # max value of slider
-        self.min_allowed_temperature = config["min_allowed_temperature"]  # min value of slider
+        self.max_allowed_temperature = config[
+            "max_allowed_temperature"
+        ]  # max value of slider
+        self.min_allowed_temperature = config[
+            "min_allowed_temperature"
+        ]  # min value of slider
 
         self.max_used_temperature = config["max_used_temperature"]  # slider
         self.min_used_temperature = config["min_used_temperature"]  # slider
@@ -121,9 +123,16 @@ class MarineEcosystem(mesa.Model):
         self.schedule.step()
         self.datacollector.collect(self)
 
-        self.temperature = float(self.max_used_temperature - self.min_used_temperature) / 2
-        self.temperature = self.temperature * math.sin(2 * math.pi * self.current_step / 365)
-        self.temperature = self.temperature + float(self.max_used_temperature + self.min_used_temperature) / 2
+        self.temperature = (
+            float(self.max_used_temperature - self.min_used_temperature) / 2
+        )
+        self.temperature = self.temperature * math.sin(
+            2 * math.pi * self.current_step / 365
+        )
+        self.temperature = (
+            self.temperature
+            + float(self.max_used_temperature + self.min_used_temperature) / 2
+        )
 
         for _ in range(5):
             if self.plankton_reproduction_probability() > 0.0:
@@ -133,17 +142,10 @@ class MarineEcosystem(mesa.Model):
                 self.grid.place_agent(plankton, (x, y))
                 self.schedule.add(plankton)
 
-    #     self.remove_redundant_agents(self.max_agents_per_cell)
-
-    # def remove_redundant_agents(self, max_agents_per_cell):
-    #     for cell_content in self.grid.coord_iter():
-    #         cell_agents, cords = cell_content
-    #         if len(cell_agents) > max_agents_per_cell:
-    #             for agent in cell_agents[max_agents_per_cell:]:
-    #                 if isinstance(agent, SeaTurtle):
-    #                     continue
-    #                 self.grid.remove_agent(agent)
-    #                 self.schedule.remove(agent)
-
     def plankton_reproduction_probability(self):
-        return math.sin(math.pi/2 * self.temperature / (self.max_allowed_temperature - self.min_allowed_temperature))
+        return math.sin(
+            math.pi
+            / 2
+            * self.temperature
+            / (self.max_allowed_temperature - self.min_allowed_temperature)
+        )

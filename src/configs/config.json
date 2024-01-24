@@ -1,7 +1,6 @@
 {
   "width": 120,
   "height": 80,
-  "max_agents_per_cell": 2,
 
   "max_allowed_temperature": 30,
   "max_used_temperature": 20,
